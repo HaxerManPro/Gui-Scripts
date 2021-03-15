@@ -1,0 +1,199 @@
+--Made by HaxerMan_Pro
+--Follow him on roblox!
+--Message me at HaxerMan_Pro#6611 on discord!
+
+local GuiHolder = Instance.new("ScreenGui")
+local HolderFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local UICorner_2 = Instance.new("UICorner")
+local ButtonOutline = Instance.new("Frame")
+local UICorner_3 = Instance.new("UICorner")
+local FlyButton = Instance.new("TextButton")
+local UICorner_4 = Instance.new("UICorner")
+local CloseOutline = Instance.new("Frame")
+local UICorner_5 = Instance.new("UICorner")
+local CloseButton = Instance.new("TextButton")
+local UICorner_6 = Instance.new("UICorner")
+local Status = Instance.new("TextLabel")
+
+--Properties:
+
+GuiHolder.Name = " GuiHolder"
+GuiHolder.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+GuiHolder.Enabled = true
+GuiHolder.ResetOnSpawn = false
+
+HolderFrame.Name = "HolderFrame"
+HolderFrame.Parent = GuiHolder
+HolderFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+HolderFrame.BackgroundColor3 = Color3.fromRGB(54, 54, 54)
+HolderFrame.Position = UDim2.new(0.217619598, 0, 0.6787709, 0)
+HolderFrame.Size = UDim2.new(0, 175, 0, 100)
+HolderFrame.Active = true
+HolderFrame.Draggable = true
+
+UICorner.Parent = HolderFrame
+
+Title.Name = "Title"
+Title.Parent = HolderFrame
+Title.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+Title.Size = UDim2.new(1, 0, 0.278625965, 0)
+Title.Font = Enum.Font.FredokaOne
+Title.Text = "HaxerMan_Pro's Fly Gui"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextScaled = true
+Title.TextSize = 14.000
+Title.TextWrapped = true
+
+UICorner_2.Parent = Title
+
+ButtonOutline.Name = "ButtonOutline"
+ButtonOutline.Parent = HolderFrame
+ButtonOutline.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+ButtonOutline.Position = UDim2.new(0.184579343, 0, 0.406353593, 0)
+ButtonOutline.Size = UDim2.new(0.63039124, 0, 0.48268947, 0)
+
+UICorner_3.Parent = ButtonOutline
+
+FlyButton.Name = "FlyButton"
+FlyButton.Parent = ButtonOutline
+FlyButton.AnchorPoint = Vector2.new(0.5, 0.5)
+FlyButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+FlyButton.Position = UDim2.new(0.5, 0, 0.5, 0)
+FlyButton.Size = UDim2.new(0.699999988, 0, 0.680000007, 0)
+FlyButton.ZIndex = 2
+FlyButton.Font = Enum.Font.FredokaOne
+FlyButton.Text = "Fly"
+FlyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FlyButton.TextScaled = true
+FlyButton.TextSize = 14.000
+FlyButton.TextWrapped = true
+FlyButton.Activated:connect(function()
+	repeat wait() 
+	until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:findFirstChild("Head") and game.Players.LocalPlayer.Character:findFirstChild("Humanoid") 
+	local mouse = game.Players.LocalPlayer:GetMouse() 
+	repeat wait() until mouse
+	local plr = game.Players.LocalPlayer 
+	local torso = plr.Character.Head 
+	local flying = false
+	local deb = true 
+	local ctrl = {f = 0, b = 0, l = 0, r = 0} 
+	local lastctrl = {f = 0, b = 0, l = 0, r = 0} 
+	local maxspeed = 50 
+	local speed = 0 
+
+	function Fly() 
+		local bg = Instance.new("BodyGyro", torso) 
+		bg.P = 9e4 
+		bg.maxTorque = Vector3.new(9e9, 9e9, 9e9) 
+		bg.cframe = torso.CFrame 
+		local bv = Instance.new("BodyVelocity", torso) 
+		bv.velocity = Vector3.new(0,0.1,0) 
+		bv.maxForce = Vector3.new(9e9, 9e9, 9e9) 
+		repeat wait() 
+			plr.Character.Humanoid.PlatformStand = true 
+			if ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0 then 
+				speed = speed+.5+(speed/maxspeed) 
+				if speed > maxspeed then 
+					speed = maxspeed 
+				end 
+			elseif not (ctrl.l + ctrl.r ~= 0 or ctrl.f + ctrl.b ~= 0) and speed ~= 0 then 
+				speed = speed-1 
+				if speed < 0 then 
+					speed = 0 
+				end 
+			end 
+			if (ctrl.l + ctrl.r) ~= 0 or (ctrl.f + ctrl.b) ~= 0 then 
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed 
+				lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r} 
+			elseif (ctrl.l + ctrl.r) == 0 and (ctrl.f + ctrl.b) == 0 and speed ~= 0 then 
+				bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed 
+			else 
+				bv.velocity = Vector3.new(0,0.1,0) 
+			end 
+			bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0) 
+		until not flying 
+		ctrl = {f = 0, b = 0, l = 0, r = 0} 
+		lastctrl = {f = 0, b = 0, l = 0, r = 0} 
+		speed = 0 
+		bg:Destroy() 
+		bv:Destroy() 
+		plr.Character.Humanoid.PlatformStand = false 
+	end 
+	mouse.KeyDown:connect(function(key) 
+		if key:lower() == "f" then 
+			if flying then flying = false 
+				Status.TextColor3 = Color3.fromRGB(255, 0, 0)
+				Status.Text = "Flying = off"
+			else 
+				flying = true 
+				Status.TextColor3 = Color3.fromRGB(0, 255, 0)
+				Status.Text = "Flying = on"
+				Fly() 
+			end 
+		elseif key:lower() == "w" then 
+			ctrl.f = 1 
+		elseif key:lower() == "s" then 
+			ctrl.b = -1 
+		elseif key:lower() == "a" then 
+			ctrl.l = -1 
+		elseif key:lower() == "d" then 
+			ctrl.r = 1 
+		end 
+	end) 
+	mouse.KeyUp:connect(function(key) 
+		if key:lower() == "w" then 
+			ctrl.f = 0 
+		elseif key:lower() == "s" then 
+			ctrl.b = 0 
+		elseif key:lower() == "a" then 
+			ctrl.l = 0 
+		elseif key:lower() == "d" then 
+			ctrl.r = 0 
+		end 
+	end)
+	Fly()
+	FlyButton.Text = "Press F to fly and UnFly"
+end)
+
+UICorner_4.Parent = FlyButton
+
+CloseOutline.Name = "CloseOutline"
+CloseOutline.Parent = HolderFrame
+CloseOutline.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+CloseOutline.Position = UDim2.new(0, 0, 1.1508379, 0)
+CloseOutline.Size = UDim2.new(1, 0, 0.393939346, 0)
+
+UICorner_5.Parent = CloseOutline
+
+CloseButton.Name = "CloseButton"
+CloseButton.Parent = CloseOutline
+CloseButton.AnchorPoint = Vector2.new(0.5, 0.5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+CloseButton.Position = UDim2.new(0.5, 0, 0.492647111, 0)
+CloseButton.Size = UDim2.new(0.917159736, 0, 0.720588207, 0)
+CloseButton.ZIndex = 2
+CloseButton.Font = Enum.Font.FredokaOne
+CloseButton.Text = "Destroy Gui"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextScaled = true
+CloseButton.TextSize = 14.000
+CloseButton.TextWrapped = true
+CloseButton.Activated:connect(function()
+	GuiHolder.Enabled = false
+end)
+
+UICorner_6.Parent = CloseButton
+
+Status.Name = "Status"
+Status.Parent = HolderFrame
+Status.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Status.BackgroundTransparency = 1.000
+Status.Position = UDim2.new(-0.00571428565, 0, -0.310000002, 0)
+Status.Size = UDim2.new(0, 175, 0, 30)
+Status.Font = Enum.Font.FredokaOne
+Status.Text = "Flying = off"
+Status.TextColor3 = Color3.fromRGB(255, 0, 0)
+Status.TextSize = 25.000
+Status.TextXAlignment = Enum.TextXAlignment.Left
